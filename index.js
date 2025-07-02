@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
+//should contain text to return to frontend
 const taskSchema = new mongoose.Schema({
   text: String,
   status: String,
@@ -50,6 +51,7 @@ app.post("/login", async (req, res) => {
   res.json({ token });
 });
 
+//middleware
 const authMiddleware = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) return res.status(401).json({ message: "No token" });
@@ -83,8 +85,7 @@ app.delete("/tasks/:id", authMiddleware, async (req, res) => {
   }
 });
 
-
-// update task request
+// update a task request
 app.patch("/tasks/:id", authMiddleware, async (req, res) => {
   const { status } = req.body;
   try {
@@ -99,7 +100,7 @@ app.patch("/tasks/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+// update task priority
 app.patch("/tasks/:id/priority", authMiddleware, async (req, res) => {
   const { priority } = req.body;
   try {
@@ -114,7 +115,6 @@ app.patch("/tasks/:id/priority", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
