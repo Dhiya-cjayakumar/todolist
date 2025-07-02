@@ -87,15 +87,14 @@ app.delete("/tasks/:id", authMiddleware, async (req, res) => {
 // update task request
 app.patch("/tasks/:id", authMiddleware, async (req, res) => {
   const { status } = req.body;
-  try{
-  const task = await Task.findOneAndUpdate(
-    { _id: req.params.id, userId: req.userId },
-    { status },
-    { new: true }
-  
-  );
-  if (!task) return res.status(404).json({ message: "Task not found" });
-  res.json(task);
+  try {
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      { status },
+      { new: true }
+    );
+    if (!task) return res.status(404).json({ message: "Task not found" });
+    res.json(task); // <-- This line is crucial!
   } catch (e) {
     res.status(500).json({ message: "Server error" });
   }
@@ -104,17 +103,18 @@ app.patch("/tasks/:id", authMiddleware, async (req, res) => {
 app.patch("/tasks/:id/priority", authMiddleware, async (req, res) => {
   const { priority } = req.body;
   try {
-  const task = await Task.findOneAndUpdate(
-    { _id: req.params.id, userId: userId },
-    { priority },
-    { new: true }
-  );
-  if (!task) return res.status(404).json({ message: "Task not found" });
-  res.json(task);
-} catch (e) {
-  res.status(500).json({ message: "Server error" });
-}
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      { priority },
+      { new: true }
+    );
+    if (!task) return res.status(404).json({ message: "Task not found" });
+    res.json(task); // <-- This line is crucial!
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
+
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
